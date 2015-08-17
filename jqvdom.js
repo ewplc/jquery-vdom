@@ -40,7 +40,7 @@
    */
 
   function createElement(def) {
-    var el = $(def.tag);
+    var el = $(document.createElement(def.tag));
 
     if (def.attributes) {
       $.each(def.attributes, function (key, value) {
@@ -57,11 +57,13 @@
     if (def.content) {
       el.text(def.content);
     }
+
+    return el;
   }
 
   function apply(el, def, parent) {
     el = $(el);
-    if (!el) {
+    if (!el || !el[0]) {
       return defer(function(def, parent) {
         parent.append(createElement(def));
       }, def, parent);
@@ -109,6 +111,36 @@
     }
   }
 
+  function buildVDom(el) {
+    el = $(el);
+
+    var vdom = {};
+
+    vdom.tag = el.prop('tagName').toLowerCase();
+
+    var children = el.children();
+    if (children.length > 0) {
+      vdom.children = [];
+      children.each(function() {
+        vdom.children.push(
+          buildVDom(this)
+        );
+      });
+    }
+    else if (el.text()) {
+      vdom.content = el.text();
+    }
+
+    if (el[0].attributes.length > 0) {
+      vdom.attributes = [];
+      $.each(el[0].attributes, function(i, attr) {
+        vdom.attributes[attr.name] = attr.value;
+      });
+    }
+
+    return vdom;
+  }
+
   /**
    *
    * @param def
@@ -118,6 +150,10 @@
     return this.each(function() {
       apply($(this), def);
     });
+  }
+
+  $.fn.buildVDom = function() {
+    return buildVDom(this.get(0));
   }
 
 
