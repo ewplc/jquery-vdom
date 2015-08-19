@@ -132,7 +132,7 @@
     }
 
     if (el[0].attributes.length > 0) {
-      vdom.attributes = [];
+      vdom.attributes = {};
       $.each(el[0].attributes, function(i, attr) {
         vdom.attributes[attr.name] = attr.value;
       });
