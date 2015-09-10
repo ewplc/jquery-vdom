@@ -105,7 +105,12 @@
     if (def.content) {
       if (el.text() !== def.content) {
         defer(function (e, c) {
-          e.text(c);
+          /*
+          * modified by Marc Hudson (fiasst@gmail.com) to accept html entities within text output
+          */
+          // e.text(c);
+          e.html(c);
+          
         }, el, def.content);
       }
     }
