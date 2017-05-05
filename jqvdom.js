@@ -114,6 +114,12 @@
         }, el, def.content);
       }
     }
+
+    if (!def.children && !def.content) {
+      defer(function (e) {
+          e.empty();
+      }, el);
+    }
   }
 
   function buildVDom(el) {
